@@ -118,6 +118,8 @@ public class GameNim extends Game {
         Game game = new GameNim(); 
         Search search = new Search(game);
         int depth = 8;
+        int coinsLeft = 0;
+        int coinsPickedUp = 0;
         
         //needed to get human's move
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -143,17 +145,20 @@ public class GameNim extends Game {
                         System.out.print("How how many coins you are picking up? ");    
                         coinsPickingUp = Integer.parseInt( in.readLine() );              
                   }
+                  System.out.println("Human is picking up " + coinsPickingUp + " coins");
                   nextState.player = 1;
                   nextState.player1Coins += coinsPickingUp;
+                  coinsPickedUp = nextState.player1Coins + nextState.player2Coins;
                   nextState.coinsRemaining -= coinsPickingUp;
-                  System.out.println("Human: \n" + nextState.player1Coins);
+                  System.out.println("Human total coins picked up: " + nextState.player1Coins);
                   break;
                   
               case 0: //Computer
-            	  
             	  nextState = (StateNim)search.bestSuccessorState(depth);
             	  nextState.player = 0;
-            	  System.out.println("Computer: \n" + nextState.player2Coins);
+                  int computerPickedUp = (nextState.player2Coins + nextState.player1Coins) - coinsPickedUp;
+                  System.out.println("Computer is picking up "+computerPickedUp+" coins");
+            	  System.out.println("Computer total coins picked up: " + nextState.player2Coins);
                   break;
             }
 
@@ -161,7 +166,7 @@ public class GameNim extends Game {
             game.currentState = nextState;
             //change player
             game.currentState.player = (game.currentState.player==0 ? 1 : 0);
-            System.out.println("Coins Remaining: "+nextState.coinsRemaining);
+            System.out.println("Coins Remaining: "+nextState.coinsRemaining + " \n");
             //Who wins?
             if ( game.isWinState(game.currentState) ) {
             
